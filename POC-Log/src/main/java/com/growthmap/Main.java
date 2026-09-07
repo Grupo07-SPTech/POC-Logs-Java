@@ -31,18 +31,24 @@ public class Main {
                     break;
                 case 1:
                     cadastrarCursinho(listaCursinhos, listaLogs);
-                    System.out.println("Cursinho Cadastrado! Aperte ENTER para continuar...");
+                    System.out.println("Nova unidade de cursinho cadastrado! Aperte ENTER para continuar...");
                     nextScanner.nextLine();
                     menu();
                     break;
                 case 2:
-                    System.out.println(listarCursinhos(listaCursinhos));
+                    System.out.println(("================ CURSINHOS ================\n"));
+                    for (String cursinho : listarCursinhos(listaCursinhos)) {
+                        System.out.println(cursinho);
+                    }
                     System.out.println("\nAperte ENTER para continuar...");
                     nextScanner.nextLine();
                     menu();
                     break;
                 case 3:
-                    System.out.println(listarLogs(listaLogs));
+                    System.out.println(("================ LOGS ================\n"));
+                    for (String log : listarLogs(listaLogs)) {
+                        System.out.println(log);
+                    }
                     System.out.println("\nAperte ENTER para continuar...");
                     nextScanner.nextLine();
                     menu();
@@ -78,14 +84,14 @@ public class Main {
         Cursinhos cursinho = new Cursinhos();
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Digite o nome do cursinho: ");
+        System.out.println("Digite o nome da unidade do cursinho: ");
         cursinho.nome = scanner.nextLine();
 
-        System.out.println("Digite o CNPJ do cursinho: ");
+        System.out.println("Digite o CNPJ da unidade: ");
         cursinho.cnpj = scanner.nextLine();
 
         System.out.println("""
-                Digite a regiao do cursinho
+                Digite a regiao da unidade
                 1 - Norte
                 2 - Nordeste
                 3 - Centro-Oeste
@@ -100,7 +106,7 @@ public class Main {
             while (nmrRegiao < 1 || nmrRegiao > 5) {
                 System.out.println("""
                         NUMERO INVALIDO!!!
-                        Digite novamente a regiao do cursinho
+                        Digite novamente a regiao da unidade
                         1 - Norte
                         2 - Nordeste
                         3 - Centro-Oeste
@@ -134,8 +140,8 @@ public class Main {
         cursinhos.add(cursinho);
 
         Logs log = new Logs();
-        log.usuario = "Teste";
-        log.acao = "Cadastrou um cursinho: " + cursinho.nome + ".";
+        log.usuario = "ID_USUARIO";
+        log.acao = "Cadastrou uma nova unidade do cursinho: " + cursinho.nome + ".";
         log.dataHora = LocalDateTime.now();
         logs.add(log);
     }
@@ -157,7 +163,11 @@ public class Main {
         List<String> listaLogs = new ArrayList<>();
 
         for (Logs log : logs) {
-            listaLogs.add("O usuario %s %s Em %s".formatted(log.usuario, log.acao, log.dataHora));
+            listaLogs.add("""
+                    ID do usuario: %s 
+                    Acao: %s 
+                    Data e hora: %s
+                    """.formatted(log.usuario, log.acao, log.dataHora));
         }
 
         return listaLogs;
