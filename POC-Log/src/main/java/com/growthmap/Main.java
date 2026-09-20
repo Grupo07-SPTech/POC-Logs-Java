@@ -141,8 +141,9 @@ public class Main {
 
         Logs log = new Logs();
         log.usuario = "ID_USUARIO";
-        log.acao = "Cadastrou uma nova unidade do cursinho: " + cursinho.nome + ".";
+        log.acao = "Cadastrou uma nova unidade do cursinho: " + cursinho.nome;
         log.dataHora = LocalDateTime.now();
+        log.categoria = "INFO";
         logs.add(log);
     }
 
@@ -162,12 +163,16 @@ public class Main {
     public static List<String> listarLogs(List<Logs> logs) {
         List<String> listaLogs = new ArrayList<>();
 
+//        for (Logs log : logs) {
+//            listaLogs.add("""
+//                    ID do usuario: %s
+//                    Acao: %s
+//                    Data e hora: %s
+//                    """.formatted(log.usuario, log.acao, log.dataHora));
+//        }
+
         for (Logs log : logs) {
-            listaLogs.add("""
-                    ID do usuario: %s 
-                    Acao: %s 
-                    Data e hora: %s
-                    """.formatted(log.usuario, log.acao, log.dataHora));
+            listaLogs.add("%s %s USER_ID=%s ACAO=%s".formatted(log.dataHora, log.categoria, log.usuario, log.acao));
         }
 
         return listaLogs;
