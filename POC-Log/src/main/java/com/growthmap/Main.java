@@ -1,176 +1,155 @@
+
 package com.growthmap;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
-        Scanner nextScanner = new Scanner(System.in);
-        List<Cursinhos> listaCursinhos = new ArrayList<>();
-        List<Logs> listaLogs = new ArrayList<>();
 
-        menu();
+        SistemaGrowthMap sistema = new SistemaGrowthMap();
 
-        Integer opcao = scanner.nextInt();
+        Usuario usuario = new Usuario(1, "Administrador");
 
-        if (opcao < 0 || opcao > 3) {
-            while (opcao < 0 || opcao > 3) {
-                System.out.println("OPCAO INVALIDA!!! DIGITE NOVAMENTE!!!");
-                menu();
-                opcao = scanner.nextInt();
-            }
-        }
+        Integer opcao = -1;
 
         while (opcao != 0) {
-            switch (opcao) {
-                case 0:
-                    System.out.println("Volte sempre!");
-                    break;
-                case 1:
-                    cadastrarCursinho(listaCursinhos, listaLogs);
-                    System.out.println("Nova unidade de cursinho cadastrado! Aperte ENTER para continuar...");
-                    nextScanner.nextLine();
-                    menu();
-                    break;
-                case 2:
-                    System.out.println(("================ CURSINHOS ================\n"));
-                    for (String cursinho : listarCursinhos(listaCursinhos)) {
-                        System.out.println(cursinho);
-                    }
-                    System.out.println("\nAperte ENTER para continuar...");
-                    nextScanner.nextLine();
-                    menu();
-                    break;
-                case 3:
-                    System.out.println(("================ LOGS ================\n"));
-                    for (String log : listarLogs(listaLogs)) {
-                        System.out.println(log);
-                    }
-                    System.out.println("\nAperte ENTER para continuar...");
-                    nextScanner.nextLine();
-                    menu();
-                    break;
 
+            menu();
+
+            if (!scanner.hasNextInt()) {
+                System.out.println("Opção inválida!");
+                scanner.nextLine();
+                continue;
             }
 
             opcao = scanner.nextInt();
+            scanner.nextLine();
 
-            if (opcao < 0 || opcao > 3) {
-                while (opcao < 0 || opcao > 3) {
-                    System.out.println("OPCAO INVALIDA!!! DIGITE NOVAMENTE!!!");
-                    menu();
-                    opcao = scanner.nextInt();
-                }
+            switch (opcao) {
+
+                case 1:
+                    cadastrarCursinho(scanner, sistema, usuario);
+                    break;
+
+                case 2:
+                    System.out.println("========== CURSINHOS ==========");
+
+                    List<Cursinhos> cursinhos = sistema.listarCursinhos();
+
+                    if (cursinhos.isEmpty()) {
+                        System.out.println("Nenhum cursinho cadastrado.");
+                    }
+
+                    for (Cursinhos cursinho : cursinhos) {
+                        System.out.println(cursinho);
+                    }
+
+                    break;
+
+                case 3:
+                    System.out.println("========== LOGS ==========");
+
+                    List<Logs> logs = sistema.listarLogs();
+
+                    if (logs.isEmpty()) {
+                        System.out.println("Nenhum log registrado.");
+                    }
+
+                    for (Logs log : logs) {
+                        System.out.println(log);
+                    }
+
+                    break;
+
+                case 0:
+                    System.out.println("Volte sempre!");
+                    break;
+
+                default:
+                    System.out.println("OPÇÃO INVÁLIDA!");
             }
-
         }
+
+        scanner.close();
     }
 
     public static void menu() {
+
         System.out.println("""
-                Digite uma das opcoes abaixo:
+                ========== GROWTHMAP ==========
+
                 1 - Cadastrar novo cursinho
                 2 - Ver todos os cursinhos
                 3 - Ver todos os logs
                 0 - Sair
-                
-                Digite aqui:""");
+
+                Digite uma opção:
+                """);
     }
 
-    public static void cadastrarCursinho(List<Cursinhos> cursinhos, List<Logs> logs) {
-        Cursinhos cursinho = new Cursinhos();
-        Scanner scanner = new Scanner(System.in);
+    public static void cadastrarCursinho(
+            Scanner scanner,
+            SistemaGrowthMap sistema,
+            Usuario usuario) {
 
-        System.out.println("Digite o nome da unidade do cursinho: ");
-        cursinho.nome = scanner.nextLine();
+        System.out.println("Digite o nome da unidade:");
+        String nome = scanner.nextLine();
 
-        System.out.println("Digite o CNPJ da unidade: ");
-        cursinho.cnpj = scanner.nextLine();
+        System.out.println("Digite o CNPJ da unidade:");
+        String cnpj = scanner.nextLine();
 
         System.out.println("""
-                Digite a regiao da unidade
+                Digite a região da unidade:
+
                 1 - Norte
                 2 - Nordeste
                 3 - Centro-Oeste
                 4 - Sudeste
                 5 - Sul
-                
+
                 Digite aqui:
                 """);
-        Integer nmrRegiao = scanner.nextInt();
 
-        if (nmrRegiao < 1 || nmrRegiao > 5) {
-            while (nmrRegiao < 1 || nmrRegiao > 5) {
-                System.out.println("""
-                        NUMERO INVALIDO!!!
-                        Digite novamente a regiao da unidade
-                        1 - Norte
-                        2 - Nordeste
-                        3 - Centro-Oeste
-                        4 - Sudeste
-                        5 - Sul
-                        
-                        Digite aqui:
-                        """);
-                nmrRegiao = scanner.nextInt();
-            }
+        if (!scanner.hasNextInt()) {
+            System.out.println("Número inválido!");
+            scanner.nextLine();
+            return;
         }
 
-        switch (nmrRegiao) {
-            case 1:
-                cursinho.regiao = "Norte";
-                break;
-            case 2:
-                cursinho.regiao = "Nordeste";
-                break;
-            case 3:
-                cursinho.regiao = "Centro-Oeste";
-                break;
-            case 4:
-                cursinho.regiao = "Sudeste";
-                break;
-            case 5:
-                cursinho.regiao = "Sul";
-                break;
+        Integer numeroRegiao = scanner.nextInt();
+        scanner.nextLine();
+
+        if (numeroRegiao < 1 || numeroRegiao > 5) {
+            System.out.println("Região inválida!");
+            return;
         }
 
-        cursinhos.add(cursinho);
+        String[] regioes = {
+                "Norte",
+                "Nordeste",
+                "Centro-Oeste",
+                "Sudeste",
+                "Sul"
+        };
 
-        Logs log = new Logs();
-        log.usuario = "ID_USUARIO";
-        log.acao = "Cadastrou uma nova unidade do cursinho: " + cursinho.nome + ".";
-        log.dataHora = LocalDateTime.now();
-        logs.add(log);
+        String regiao = regioes[numeroRegiao - 1];
+
+        try {
+            sistema.cadastrarCursinho(
+                    nome,
+                    cnpj,
+                    regiao,
+                    usuario
+            );
+
+            System.out.println("Cursinho cadastrado com sucesso!");
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
     }
-
-    public static List<String> listarCursinhos(List<Cursinhos> cursinhos) {
-        List<String> listaCursinhos = new ArrayList<>();
-
-        for (Cursinhos cursinho : cursinhos) {
-            listaCursinhos.add("""
-                    Nome: %s
-                    CNPJ: %s
-                    Regiao: %s
-                    """.formatted(cursinho.nome, cursinho.cnpj, cursinho.regiao));
-        }
-        return listaCursinhos;
-    }
-
-    public static List<String> listarLogs(List<Logs> logs) {
-        List<String> listaLogs = new ArrayList<>();
-
-        for (Logs log : logs) {
-            listaLogs.add("""
-                    ID do usuario: %s 
-                    Acao: %s 
-                    Data e hora: %s
-                    """.formatted(log.usuario, log.acao, log.dataHora));
-        }
-
-        return listaLogs;
-    }
-
 }
